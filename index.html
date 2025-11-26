@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/paw-svgrepo-com.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Makiato.Art</title>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+    <style>
+      
+      .noscript-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      
+      .noscript-content {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        max-width: 600px;
+        margin: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+      
+      .noscript-content h1 {
+        color: #dc2626;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+      
+      .noscript-content p {
+        color: #4b5563;
+        font-size: 1.125rem;
+        line-height: 1.75;
+        margin-bottom: 1.5rem;
+      }
+      
+      .noscript-instructions {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        text-align: left;
+      }
+      
+      .noscript-instructions h3 {
+        color: #1f2937;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+      
+      .noscript-instructions ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .noscript-instructions li {
+        padding: 0.5rem 0;
+        color: #6b7280;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      
+      .noscript-instructions li:last-child {
+        border-bottom: none;
+      }
+      
+      .noscript-instructions strong {
+        color: #374151;
+        font-weight: 600;
+      }
+      
+      .noscript-footer {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.875rem;
+        color: #9ca3af;
+      }
+      
+      /* Prevent text selection globally */
+      * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      
+      /* Allow text selection for inputs and textareas */
+      input, textarea {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <div class="noscript-overlay">
+        <div class="noscript-content">
+          <!-- <h1>Nuh uh</h1> -->
+          <p>
+            There's a reason we are here right now.
+          </p>
+
+        </div>
+      </div>
+    </noscript>
+
+    <div id="root"></div>
+    
+    <!-- Vite/React entry point -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
