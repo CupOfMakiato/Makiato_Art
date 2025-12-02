@@ -204,17 +204,27 @@ const HomePage = () => {
                         animation: floatImage 3s ease-in-out infinite;
                       }
                     `}</style>
-                    <div className="w-64 h-64 rounded-2xl overflow-hidden floating-image">
+                    <div className="w-64 h-64 rounded-2xl floating-image relative group">
                       {profileData?.imageUrl ? (
-                        <img
-                          src={profileData.imageUrl}
-                          alt={profileData.name}
-                          className="w-full h-full object-cover pointer-events-none select-none hover:scale-105 transition-transform duration-500 ease-in-out"
-                          draggable="false"
-                          onContextMenu={(e) => e.preventDefault()}
-                        />
+                        <>
+                          <img
+                            src={profileData.imageUrl}
+                            alt={profileData.name}
+                            className="w-full h-full object-cover pointer-events-none select-none hover:scale-105 transition-transform duration-500 ease-in-out rounded-2xl overflow-hidden"
+                            draggable="false"
+                            onContextMenu={(e) => e.preventDefault()}
+                          />
+                          {/* Tooltip */}
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20">
+                            <div className="bg-[#1d254d] text-white text-sm py-3 px-4 rounded-lg shadow-xl whitespace-nowrap relative">
+                               Art by @BakaNeonnii
+                              {/* Arrow */}
+                              {/* <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-[#1d254d]"></div> */}
+                            </div>
+                          </div>
+                        </>
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 rounded-2xl">
                           No Image
                         </div>
                       )}
