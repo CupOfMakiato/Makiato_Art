@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import Header from "../../components/Common/Header";
 import { BsTwitterX } from "react-icons/bs";
@@ -10,6 +10,8 @@ import bgMain from "../../assets/scug.jpg";
 import bgBehind from "../../assets/tanuki.jpg";
 
 const ContactPage = () => {
+  const [isContentAnimating, setIsContentAnimating] = useState(false);
+
   const socialLinks = [
     {
       name: "Twitter",
@@ -28,10 +30,48 @@ const ContactPage = () => {
     },
     {
       name: "Discord Server (W.I.P)",
-      url: "https://discord.com/users/625913111827841036",
+      // url: "https://discord.com/users/625913111827841036",
       icon: <FaDiscord />,
     },
   ];
+
+  useEffect(() => {
+      // Disable right-click
+      const handleContextMenu = (e) => e.preventDefault();
+  
+      // Disable keyboard shortcuts
+      const handleKeyDown = (e) => {
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+          (e.ctrlKey && e.key.toLowerCase() === 'u') ||
+          (e.ctrlKey && e.key.toLowerCase() === 's')
+        ) {
+          e.preventDefault();
+          return false;
+        }
+      };
+  
+      // Disable image dragging
+      const handleDragStart = (e) => {
+        if (e.target.tagName === 'IMG') e.preventDefault();
+      };
+  
+      // Add listeners
+      document.addEventListener('contextmenu', handleContextMenu);
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('dragstart', handleDragStart);
+
+      // Trigger fade-in animation when component mounts
+      setTimeout(() => setIsContentAnimating(true), 10);
+  
+      // Cleanup on unmount
+      return () => {
+        document.removeEventListener('contextmenu', handleContextMenu);
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('dragstart', handleDragStart);
+      };
+    }, []);
 
   return (
     <div
@@ -70,13 +110,19 @@ const ContactPage = () => {
               
 
               {/* Content */}
-              <div className="p-8 md:p-12 relative z-10">
+              <div className={`p-8 md:p-12 relative z-10 transition-all duration-500 ${
+                isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}>
+                {/* <h1 className="text-4xl md:text-5xl font-black text-[#EDF1FF] mb-4 tracking-tight text-center">
+                        Contact
+                      </h1>
+                      <div className="border-b-2 border-[#d1daff] opacity-50 border-dashed"></div> */}
                 {/* Intro Section */}
                 <div className="text-center mb-8 md:mb-12">
-                  <p className="text-sm md:text-lg text-[#EDF1FF] leading-relaxed mb-3">
+                  <p className="mt-3 text-base text-[#EDF1FF] leading-relaxed text-center">
                     You can find me through the following social media platforms:
                   </p>
-                  <p className="text-sm md:text-lg text-[#EDF1FF] leading-relaxed">
+                  <p className="mt-3 text-base text-[#EDF1FF] leading-relaxed text-center">
                     Click any icon below to open the link in a new tab.
                   </p>
                 </div>

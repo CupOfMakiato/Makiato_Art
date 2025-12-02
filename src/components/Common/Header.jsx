@@ -3,14 +3,11 @@ import { HiMenu } from "react-icons/hi";
 import { BiSolidDownArrow } from "react-icons/bi";
 import HeaderLogo from "../../assets/cat-svgrepo-com.svg?react";
 import meowSound from "../../assets/omori-meow.mp3";
-import { HiHome } from "react-icons/hi";
-import { MdOutlinePaid } from "react-icons/md";
 import { TbFileDescription } from "react-icons/tb";
-import { BiQuestionMark } from "react-icons/bi";
-import { MdContactMail } from "react-icons/md";
 import { FaPaintBrush } from "react-icons/fa";
-import { FaQuestionCircle } from "react-icons/fa";
-import { IoMdMail } from "react-icons/io";
+import { PiLinkSimpleBold } from "react-icons/pi";
+import { PiPawPrintFill } from "react-icons/pi";
+import { FaRegQuestionCircle } from "react-icons/fa";
 import { Howl } from "howler";
 
 const Header = () => {
@@ -18,11 +15,11 @@ const Header = () => {
   const [currentPath, setCurrentPath] = useState("");
   const soundRef = useRef(null);
   const navItems = [
-  { label: "Home", path: "/", icon: <HeaderLogo className="w-5 h-5" /> },
+  { label: "Home", path: "/", icon: <PiPawPrintFill className="w-5 h-5" /> },
   { label: "Commission", path: "/commission", icon: <FaPaintBrush className="w-5 h-5" /> },
   { label: "T.O.S", path: "/tos", icon: <TbFileDescription className="w-5 h-5" /> },
-  { label: "F.A.Q", path: "/faq", icon: <FaQuestionCircle className="w-5 h-5" /> },
-  { label: "Contact", path: "/contact", icon: <IoMdMail className="w-5 h-5" /> },
+  { label: "F.A.Q", path: "/faq", icon: <FaRegQuestionCircle className="w-5 h-5" /> },
+  { label: "Links", path: "/contact", icon: <PiLinkSimpleBold className="w-5 h-5" /> },
 ];
 
 

@@ -6,7 +6,6 @@ import {
 } from "../../api/trello-api";
 import MainLayout from "../../layouts/MainLayout";
 import LoadingOverlay from "../../components/Common/LoadingOverlay";
-import closeSound from "../../assets/click_close.mp3";
 import clickSound from "../../assets/collapsible_open.mp3";
 import Header from "../../components/Common/Header";
 import bgMain from "../../assets/scug.jpg";
@@ -19,6 +18,8 @@ const CommissionPage = () => {
   const [loading, setLoading] = useState(true);
   const [, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isLightboxAnimating, setIsLightboxAnimating] = useState(false);
+  const [isContentAnimating, setIsContentAnimating] = useState(false);
   const clickSoundRef = useRef(null);
   const closeSoundRef = useRef(null);
   const [audioReady, setAudioReady] = useState(false);
@@ -28,13 +29,6 @@ const CommissionPage = () => {
   useEffect(() => {
     clickSoundRef.current = new Howl({
       src: [clickSound],
-      volume: 0.4,
-      html5: true,
-      preload: true,
-    });
-
-    closeSoundRef.current = new Howl({
-      src: [closeSound],
       volume: 0.4,
       html5: true,
       preload: true,
@@ -57,7 +51,7 @@ const CommissionPage = () => {
       if (clickSoundRef.current) clickSoundRef.current.unload();
       if (closeSoundRef.current) closeSoundRef.current.unload();
     };
-  }, []); // Empty dependency array - run once on mount
+  }, []);
 
   useEffect(() => {
   const fetchPortfolioData = async () => {
@@ -86,7 +80,7 @@ const CommissionPage = () => {
 
             return {
               id: card.id,
-              title: card.name, // This will be your tier name
+              title: card.name,
               description: card.desc,
               images: images.map((img) => ({
                 id: img.id,
@@ -113,6 +107,8 @@ const CommissionPage = () => {
 
       setCommissionTiers(validTiers);
       setLoading(false);
+      // Trigger fade-in animation after loading is complete
+      setTimeout(() => setIsContentAnimating(true), 10);
     } catch (err) {
       console.error("Error loading portfolio:", err);
       setError(`Failed to load gallery: ${err.message}`);
@@ -159,20 +155,25 @@ const CommissionPage = () => {
     }
   };
 
-  const playCloseSound = () => {
-    if (closeSoundRef.current && audioReady) {
-      closeSoundRef.current.play();
-    }
-  };
+  // const playCloseSound = () => {
+  //   if (closeSoundRef.current && audioReady) {
+  //     closeSoundRef.current.play();
+  //   }
+  // };
 
   const openLightbox = (image) => {
     playClickSound();
     setSelectedImage(image);
+    // Trigger animation after setting the image
+    setTimeout(() => setIsLightboxAnimating(true), 10);
   };
 
   const closeLightbox = () => {
-    playCloseSound();
-    setSelectedImage(null);
+    // playCloseSound();
+    playClickSound();
+    setIsLightboxAnimating(false);
+    // Wait for animation to complete before removing image
+    setTimeout(() => setSelectedImage(null), 300);
   };
 
   const handleDragStart = (e) => {
@@ -197,6 +198,14 @@ const CommissionPage = () => {
         <div className="relative w-full max-w-3xl">
           {/* Main Card with Background Image Overlay */}
           <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
+            {loading && (
+                <div className="absolute inset-0 bg-[#1B1D25] bg-opacity-95 flex items-center justify-center z-50 rounded-2xl">
+                  <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#edf1ff] border-r-transparent"></div>
+                    <p className="mt-4 text-[#d1daff] text-lg">Loading...</p>
+                  </div>
+                </div>
+              )}
             <div
               className="absolute inset-0 opacity-20 z-0"
               style={{
@@ -212,89 +221,103 @@ const CommissionPage = () => {
             </div>
 
             {/* Portfolio Grid */}
-<main className="container mx-auto px-6 py-12">
-  <h1 className="text-4xl md:text-5xl font-black text-[#edf1ff] mb-4 tracking-tight text-center">
-                        Commission Info
-                      </h1>
-  {commissionTiers.length === 0 && !loading ? (
-    <div className="text-center py-20">
-      <p className="text-gray-500 text-lg">Gallery is empty</p>
-    </div>
-  ) : (
-    <div className="space-y-16">
-      <div className="border-b-2 border-[#EDF1FF] my-6 border-dashed opacity-30"></div>
-      {/* <p className="mb-8 text-center mt-2 text-[#EDF1FF]">
-        Clicking on arts to view them :3
-      </p> */}
-      {commissionTiers.map((tier) => (
-        
-        <div key={tier.id} className="tier-section">
-          {/* Tier Header */}
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-white mb-3">
-              {tier.title}
-            </h2>
-            {tier.description && (
-              <div className="text-[#D1DAFF] max-w-3xl mx-auto">
-                <TrelloMarkdownRenderer content={tier.description} />
-              </div>
-            )}
-          </div>
-
-          {/* Tier Images Grid */}
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-            {tier.images.map((image) => (
-              <div
-                key={image.id}
-                className="break-inside-avoid cursor-zoom-in group mb-6"
-                onClick={() => openLightbox(image)}
-                onContextMenu={(e) => e.preventDefault()}
-              >
-                <div className="relative bg-gray-100 overflow-hidden rounded-lg transition-transform duration-500 group-hover:scale-105">
-                  <img
-                    src={image.url}
-                    alt={image.name}
-                    className="w-full h-auto object-contain pointer-events-none"
-                    loading="lazy"
-                    draggable="false"
-                    onDragStart={handleDragStart}
-                    onContextMenu={(e) => e.preventDefault()}
-                    style={{
-                      userSelect: "none",
-                      WebkitUserSelect: "none",
-                      MozUserSelect: "none",
-                      msUserSelect: "none",
-                      WebkitTouchCallout: "none",
-                      WebkitUserDrag: "none",
-                    }}
-                  />
-                  <div
-                    className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"
-                    onContextMenu={(e) => e.preventDefault()}
-                  />
+            <main className={`container mx-auto px-6 py-12 relative z-10 transition-all duration-500 ${
+              isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}>
+              <h1 className="text-4xl md:text-5xl font-black text-[#edf1ff] mb-4 tracking-tight text-center">
+                                    Commission Info
+                                  </h1>
+              {commissionTiers.length === 0 && !loading ? (
+                <div className="text-center py-20">
+                  <p className="text-gray-500 text-lg">Gallery is empty</p>
                 </div>
-              </div>
-            ))}
-          </div>
+              ) : (
+                <div className="space-y-16">
+                  <div className="border-b-2 border-[#EDF1FF] my-6 border-dashed opacity-30"></div>
+                  <p className="mt-3 text-base text-[#EDF1FF] leading-relaxed text-center">
+                    Before commissioning please prefer to my{" "}
+                    <a
+                      href="/tos"
+                      // target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#A8D8FF] hover:text-white hover:underline transition-all duration-300 font-semibold"
+                    >Terms of Service</a>.
+                  </p>
+                  {commissionTiers.map((tier) => (
+                    
+                    <div key={tier.id} className="tier-section">
+                      {/* Tier Header */}
+                      <div className="mb-8 text-center">
+                        <h2 className="text-3xl font-bold text-white mb-3">
+                          {tier.title}
+                        </h2>
+                        {tier.description && (
+                          <div className="text-[#D1DAFF] max-w-3xl mx-auto">
+                            <TrelloMarkdownRenderer content={tier.description} />
+                          </div>
+                        )}
+                      </div>
 
-          {/* Divider between tiers */}
-          {tier.id !== commissionTiers[commissionTiers.length - 1].id && (
-            <div className="border-b-2 border-[#EDF1FF] my-6 border-dashed opacity-30 mt-9"></div>
-          )}
-        </div>
-      ))}
-    </div>
-  )}
-  <div className="border-b-2 border-[#EDF1FF] my-6 border-dashed opacity-30 mt-9"></div>
-  <h2 className="text-3xl text-center font-bold text-white mb-3">
-              Interested in something else?
-            </h2>
-  <p className="text-[#D1DAFF] max-w-3xl mx-auto text-center">Interested in something else?
-If you idea doesn't land any of these tiers feel free to ask me about it!
-I have icons, chibis, fullbody drawings etc
-that you can find on my socials that aren't listed here.</p>
+                      {/* Tier Images Grid */}
+                      <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+                        {tier.images.map((image) => (
+                          <div
+                            key={image.id}
+                            className="break-inside-avoid cursor-zoom-in group mb-6"
+                            onClick={() => openLightbox(image)}
+                            onContextMenu={(e) => e.preventDefault()}
+                          >
+                            <div className="relative bg-gray-100 overflow-hidden rounded-lg transition-transform duration-500 group-hover:scale-105">
+                              <img
+                                src={image.url}
+                                alt={image.name}
+                                className="w-full h-auto object-contain pointer-events-none"
+                                loading="lazy"
+                                draggable="false"
+                                onDragStart={handleDragStart}
+                                onContextMenu={(e) => e.preventDefault()}
+                                style={{
+                                  userSelect: "none",
+                                  WebkitUserSelect: "none",
+                                  MozUserSelect: "none",
+                                  msUserSelect: "none",
+                                  WebkitTouchCallout: "none",
+                                  WebkitUserDrag: "none",
+                                }}
+                              />
+                              <div
+                                className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"
+                                onContextMenu={(e) => e.preventDefault()}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
 
-</main>
+                      {/* Divider between tiers */}
+                      {tier.id !== commissionTiers[commissionTiers.length - 1].id && (
+                        <div className="border-b-2 border-[#EDF1FF] my-6 border-dashed opacity-30 mt-9"></div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="border-b-2 border-[#EDF1FF] my-6 border-dashed opacity-30 mt-9"></div>
+              <h2 className="text-3xl text-center font-bold text-white mb-3">
+                          Interested in something else?
+                        </h2>
+              <p className="text-[#D1DAFF] max-w-3xl mx-auto text-center">
+            If you idea doesn't land any of these tiers feel free to ask me about it!
+            I have icons, chibis, fullbody drawings etc
+            that you can find on my socials that aren't listed {" "}
+                    <a
+                      href="/contact"
+                      // target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#A8D8FF] hover:text-white hover:underline transition-all duration-300 font-semibold"
+                    >here.</a></p>
+
+            </main>
 
 
           </div>
@@ -304,19 +327,17 @@ that you can find on my socials that aren't listed here.</p>
       {/* Lightbox Modal */}
       {selectedImage && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4 cursor-zoom-out"
+          className={`fixed inset-0 bg-black z-50 flex items-center justify-center p-4 cursor-zoom-out transition-opacity duration-300 ${
+            isLightboxAnimating ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }}
           onClick={closeLightbox}
           onContextMenu={(e) => e.preventDefault()}
         >
-          {/* <button
-            className="absolute top-6 right-6 rounded-lg border border-transparent px-5 py-2.5 text-base font-medium font-inherit bg-[#141414] cursor-pointer transition-colors duration-[250ms]"
-            onClick={closeLightbox}
-            aria-label="Close"
-          >
-            ×
-          </button> */}
           <div
-            className="max-w-6xl max-h-full relative cursor-zoom-out"
+            className={`max-w-6xl max-h-full relative cursor-zoom-out transition-all duration-300 ${
+              isLightboxAnimating ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            }`}
             onClick={(e) => e.stopPropagation()}
             onContextMenu={(e) => e.preventDefault()}
           >
@@ -341,16 +362,6 @@ that you can find on my socials that aren't listed here.</p>
               className="absolute inset-0 pointer-events-none cursor-zoom-out"
               onContextMenu={(e) => e.preventDefault()}
             />
-            {/* <div className="text-white text-center mt-6">
-              <h3 className="text-2xl font-light mb-2">
-                {selectedImage.name}
-              </h3>
-              {selectedImage.cardDescription && (
-                <p className="text-gray-300">
-                  {selectedImage.cardDescription}
-                </p>
-              )}
-            </div> */}
           </div>
         </div>
       )}

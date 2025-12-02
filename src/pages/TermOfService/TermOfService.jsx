@@ -15,7 +15,43 @@ const TermOfService = () => {
   const [termOfServiceData, setTermOfServiceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isContentAnimating, setIsContentAnimating] = useState(false);
   const nodeRef = useRef(null);
+
+  useEffect(() => {
+        // Disable right-click
+        const handleContextMenu = (e) => e.preventDefault();
+    
+        // Disable keyboard shortcuts
+        const handleKeyDown = (e) => {
+          if (
+            e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+            (e.ctrlKey && e.key.toLowerCase() === 'u') ||
+            (e.ctrlKey && e.key.toLowerCase() === 's')
+          ) {
+            e.preventDefault();
+            return false;
+          }
+        };
+    
+        // Disable image dragging
+        const handleDragStart = (e) => {
+          if (e.target.tagName === 'IMG') e.preventDefault();
+        };
+    
+        // Add listeners
+        document.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('dragstart', handleDragStart);
+    
+        // Cleanup on unmount
+        return () => {
+          document.removeEventListener('contextmenu', handleContextMenu);
+          document.removeEventListener('keydown', handleKeyDown);
+          document.removeEventListener('dragstart', handleDragStart);
+        };
+      }, []);
 
   useEffect(() => {
     const fetchTermOfServiceData = async () => {
@@ -59,6 +95,8 @@ const TermOfService = () => {
         setTermOfServiceData(validCards);
 
         setLoading(false);
+        // Trigger fade-in animation after loading is complete
+        setTimeout(() => setIsContentAnimating(true), 10);
       } catch (err) {
         console.error("Error loading term of service data:", err);
         setError(`Failed to load term of service information: ${err.message}`);
@@ -87,6 +125,14 @@ const TermOfService = () => {
           <div ref={nodeRef}>
             {/* Main Card with Background Image Overlay */}
             <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
+              {loading && (
+                <div className="absolute inset-0 bg-[#1B1D25] bg-opacity-95 flex items-center justify-center z-50 rounded-2xl">
+                  <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#edf1ff] border-r-transparent"></div>
+                    <p className="mt-4 text-[#d1daff] text-lg">Loading...</p>
+                  </div>
+                </div>
+              )}
               {/* Background Image Overlay for Card */}
               <div
                 className="absolute inset-0 opacity-20 z-0"
@@ -103,10 +149,10 @@ const TermOfService = () => {
               </div>
 
               {/* Content */}
-              <div className="p-8 md:p-12 relative z-10">
-                {loading ? (
-                  <LoadingOverlay />
-                ) : error ? (
+              <div className={`p-8 md:p-12 relative z-10 transition-all duration-500 ${
+                isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}>
+                {error ? (
                   <div className="text-center py-20">
                     <p className="text-[#EDF1FF] text-lg">{error}</p>
                   </div>

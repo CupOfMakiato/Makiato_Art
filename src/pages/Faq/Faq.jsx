@@ -1,13 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../../components/Common/Header";
 import bgMain from "../../assets/scug.jpg";
 import bgBehind from "../../assets/tanuki.jpg";
+import clickSound from "../../assets/collapsible_open.mp3";
+import { Howl } from "howler";
 
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  const [isContentAnimating, setIsContentAnimating] = useState(false);
+  const clickSoundRef = useRef(null);
+  const [audioReady, setAudioReady] = useState(false);
+
+  // Initialize audio in useEffect
+    useEffect(() => {
+      clickSoundRef.current = new Howl({
+        src: [clickSound],
+        volume: 0.4,
+        html5: true,
+        preload: true,
+      });
+  
+      const markAudioReady = () => {
+        setAudioReady(true);
+      };
+  
+      const events = ["click", "touchstart", "keydown"];
+      events.forEach((event) => {
+        document.addEventListener(event, markAudioReady, { once: true });
+      });
+      const handleContextMenu = (e) => e.preventDefault();
+
+    // Disable keyboard shortcuts
+    const handleKeyDown = (e) => {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && e.key.toLowerCase() === 'u') ||
+        (e.ctrlKey && e.key.toLowerCase() === 's')
+      ) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    // Disable image dragging
+    const handleDragStart = (e) => {
+      if (e.target.tagName === 'IMG') e.preventDefault();
+    };
+
+    // Add listeners
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('dragstart', handleDragStart);
+
+    // Trigger fade-in animation when component mounts
+    setTimeout(() => setIsContentAnimating(true), 10);
+
+      // Cleanup function
+      return () => {
+        document.removeEventListener('contextmenu', handleContextMenu);
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('dragstart', handleDragStart);
+        events.forEach((event) => {
+          document.removeEventListener(event, markAudioReady);
+        });
+        if (clickSoundRef.current) clickSoundRef.current.unload();
+      };
+      
+    }, []);
+    
 
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
+    playClickSound();
+  };
+
+  const playClickSound = () => {
+    if (clickSoundRef.current && audioReady) {
+      clickSoundRef.current.play();
+    }
   };
 
   const faqs = [
@@ -25,7 +96,11 @@ const Faq = () => {
     },
     {
       question: "Where do you get your sound effects?",
-      answer: "some Discord soundboards, YouTube audio library, and freesound.org"
+      answer: "Some Discord soundboards, YouTube audio library, and freesound.org"
+    },
+    {
+      question: "What framework did you use to build this website?",
+      answer: "I built this website using Reactjs and Tailwindcss :P"
     },
   ];
 
@@ -59,12 +134,14 @@ const Faq = () => {
                 <Header />
               </div>
 
-              <div className="p-8 md:p-12 relative z-10">
+              <div className={`p-8 md:p-12 relative z-10 transition-all duration-500 ${
+                isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}>
                 <div className="space-y-3 w-full mx-auto">
-                    <h1 className="text-4xl md:text-5xl font-black text-[#edf1ff] mb-4 tracking-tight text-center">
+                    {/* <h1 className="text-4xl md:text-5xl font-black text-[#EDF1FF] mb-4 tracking-tight text-center">
                         F.A.Q
                       </h1>
-                      <div className="border-b-2 border-[#d1daff] opacity-50 border-dashed mb-10"></div>
+                      <div className="border-b-2 border-[#d1daff] opacity-50 border-dashed mb-10"></div> */}
                   {faqs.map((faq, index) => (
                     <div key={index} className="w-full">
                       <button

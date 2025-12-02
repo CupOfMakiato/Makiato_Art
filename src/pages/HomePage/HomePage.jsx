@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import MainLayout from "../../layouts/MainLayout";
-import LoadingOverlay from "../../components/Common/LoadingOverlay";
 import Header from "../../components/Common/Header";
 import Footer from "../../components/Common/Footer";
 import bgMain from "../../assets/scug.jpg";
@@ -18,14 +17,14 @@ const HomePage = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPath, setCurrentPath] = useState("");
+  // const [currentPath, setCurrentPath] = useState("");
+  const [isContentAnimating, setIsContentAnimating] = useState(false);
   const nodeRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // FIX: setCurrentPath only once
-  useEffect(() => {
-    setCurrentPath(window.location.pathname);
-  }, []);
+  // useEffect(() => {
+  //   setCurrentPath(window.location.pathname);
+  // }, []);
 
   useEffect(() => {
     const fetchAboutData = async () => {
@@ -58,6 +57,7 @@ const HomePage = () => {
           imageUrl: profileImage ? profileImage.url : null,
         });
         setLoading(false);
+        setTimeout(() => setIsContentAnimating(true), 10);
       } catch (err) {
         setError(`Failed to load profile information: ${err.message}`);
         setLoading(false);
@@ -65,15 +65,49 @@ const HomePage = () => {
     };
 
     fetchAboutData();
-  }, []);
-  useEffect(() => {
-  const timer = setInterval(() => {
-    setCurrentTime(new Date());
-  }, 1000);
+    const handleContextMenu = (e) => e.preventDefault();
 
-  // Cleanup interval on component unmount
-  return () => clearInterval(timer);
-}, []);
+    // Disable keyboard shortcuts
+    const handleKeyDown = (e) => {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && e.key.toLowerCase() === 'u') ||
+        (e.ctrlKey && e.key.toLowerCase() === 's')
+      ) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    // Disable image dragging
+    const handleDragStart = (e) => {
+      if (e.target.tagName === 'IMG') e.preventDefault();
+    };
+
+    // Add listeners
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('dragstart', handleDragStart);
+
+    // Cleanup on unmount
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('dragstart', handleDragStart);
+    };
+  }, []);
+
+  
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -92,6 +126,14 @@ const HomePage = () => {
           <div ref={nodeRef}>
             {/* Main Card with Background Image Overlay */}
             <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
+              {loading && (
+                <div className="absolute inset-0 bg-[#1B1D25] bg-opacity-95 flex items-center justify-center z-50 rounded-2xl">
+                  <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#edf1ff] border-r-transparent"></div>
+                    <p className="mt-4 text-[#d1daff] text-lg">Loading...</p>
+                  </div>
+                </div>
+              )}
               {/* Background Image Overlay for Card */}
               <div
                 className="absolute inset-0 opacity-20 z-0"
@@ -107,8 +149,21 @@ const HomePage = () => {
                 <Header />
               </div>
 
+              {/* Error Display */}
+              {error && (
+                <div className="p-8 md:p-12 relative z-10">
+                  <div className="text-center text-red-400">
+                    <h2 className="text-2xl font-bold mb-4">Error</h2>
+                    <p>{error}</p>
+                  </div>
+                </div>
+              )}
+
               {/* Content */}
-              <div className="p-8 md:p-12 relative z-10">
+              {!error && (
+                <div className={`p-8 md:p-12 relative z-10 transition-all duration-500 ${
+                  isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
                   {/* Text */}
                   <div className="flex flex-col justify-center order-2 md:order-1">
@@ -126,15 +181,15 @@ const HomePage = () => {
                     <div className="border-b-2 border-[#d1daff] my-6 opacity-50 border-dashed"></div>
                     {/* Current Time Display */}
                     <div className="flex items-center gap-2 text-[#d1daff]">
-                    <p> My Local Time: </p>
-                    <span className="text-lg font-medium">
-                      {currentTime.toLocaleTimeString('en-US', {
-                        timeZone: 'Asia/Bangkok',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
-                      })}
-                    </span>
+                      <p> My Local Time: </p>
+                      <span className="text-lg font-medium">
+                        {currentTime.toLocaleTimeString('en-US', {
+                          timeZone: 'Asia/Bangkok',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </span>
                     </div>
                   </div>
 
@@ -167,6 +222,7 @@ const HomePage = () => {
                   </div>
                 </div>
               </div>
+              )}
             </div>
           </div>
         </div>
