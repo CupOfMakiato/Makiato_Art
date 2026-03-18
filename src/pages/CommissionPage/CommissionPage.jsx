@@ -194,7 +194,7 @@ const CommissionPage = () => {
       }}
     >
       {/* Page Content */}
-      <div className="flex-grow py-12 px-4 flex items-center justify-center relative z-10">
+      <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
           {/* Main Card with Background Image Overlay */}
           <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">

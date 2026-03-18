@@ -116,7 +116,7 @@ const Faq = () => {
         backgroundBlendMode: "overlay",
       }}
     >
-      <div className="flex-grow py-12 px-4 flex items-center justify-center relative z-10">
+      <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
           <div>
             <div className="bg-[#22232b] shadow-2xl overflow-hidden relative rounded-t-2xl">
@@ -153,7 +153,7 @@ const Faq = () => {
                           {faq.question}
                         </span>
                         <svg
-                          className={`w-5 h-5 text-[#EDF1FF] group-hover:text-[#A8D8FF] transform transition-all duration-300 flex-shrink-0 ${
+                          className={`w-5 h-5 text-[#EDF1FF] group-hover:text-[#A8D8FF] transform transition-all duration-300 shrink-0 ${
                             openIndex === index ? "rotate-180" : ""
                           }`}
                           fill="none"
