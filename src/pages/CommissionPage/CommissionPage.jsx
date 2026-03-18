@@ -34,6 +34,9 @@ const CommissionPage = () => {
       preload: true,
     });
 
+    const clickAudio = clickSoundRef.current;
+    const closeAudio = closeSoundRef.current;
+
     const markAudioReady = () => {
       setAudioReady(true);
     };
@@ -48,8 +51,8 @@ const CommissionPage = () => {
       events.forEach((event) => {
         document.removeEventListener(event, markAudioReady);
       });
-      if (clickSoundRef.current) clickSoundRef.current.unload();
-      if (closeSoundRef.current) closeSoundRef.current.unload();
+      if (clickAudio) clickAudio.unload();
+      if (closeAudio) closeAudio.unload();
     };
   }, []);
 
