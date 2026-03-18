@@ -1,22 +1,22 @@
 import React from "react";
 import { BsTwitterX } from "react-icons/bs";
 import { FaFacebookSquare } from "react-icons/fa";
-import giffy from "../../assets/giffy.gif"
-import icecoffee from "../../assets/icecoffee.gif"
+// import giffy from "../../assets/giffy.gif"
+// import icecoffee from "../../assets/icecoffee.gif"
 
 const Footer = () => {
-  const socialLinks = [
-    {
-      name: "FaceBook",
-      url: "https://www.facebook.com/7Cattoo",
-      icon: <FaFacebookSquare />,
-    },
-    {
-      name: "Twitter",
-      url: "https://x.com/SevenCat13",
-      icon: <BsTwitterX />,
-    },
-  ];
+  // const socialLinks = [
+  //   {
+  //     name: "FaceBook",
+  //     url: "https://www.facebook.com/7Cattoo",
+  //     icon: <FaFacebookSquare />,
+  //   },
+  //   {
+  //     name: "Twitter",
+  //     url: "https://x.com/SevenCat13",
+  //     icon: <BsTwitterX />,
+  //   },
+  // ];
 
   return (
     <footer className="bg-white border-t border-gray-200 mt-20">

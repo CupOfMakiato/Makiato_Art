@@ -120,7 +120,7 @@ const TermOfService = () => {
       }}
     >
       {/* Page Content */}
-      <div className="flex-grow py-12 px-4 flex items-center justify-center relative z-10">
+      <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
           <div ref={nodeRef}>
             {/* Main Card with Background Image Overlay */}
