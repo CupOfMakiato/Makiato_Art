@@ -1,3 +1,5 @@
+[![CI](https://github.com/CupOfMakiato/Makiato_Art/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/CupOfMakiato/Makiato_Art/actions/workflows/ci.yml)
+[![CD](https://github.com/CupOfMakiato/Makiato_Art/actions/workflows/cd.yml/badge.svg?branch=main)](https://github.com/CupOfMakiato/Makiato_Art/actions/workflows/cd.yml)
 # Makiato Art Website
 
 A simple website for sharing commission information and Linktree-style social links.
@@ -15,6 +17,7 @@ A simple website for sharing commission information and Linktree-style social li
 - React Router
 - Tailwind CSS
 - ESLint
+- Trello API for storing files and images
 
 ## Local Development
 
@@ -23,7 +26,7 @@ npm install
 npm run dev
 ```
 
-App runs on the local Vite dev server (usually `http://localhost:5173`).
+App runs on the local Vite dev server (usually `http://localhost:3000`).
 
 ## Scripts
 
