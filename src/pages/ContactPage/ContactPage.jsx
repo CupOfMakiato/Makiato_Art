@@ -102,10 +102,7 @@ const ContactPage = () => {
                   pointerEvents: "none",
                 }}
               ></div>
-              {/* Header with rounded top */}
-              <div className="px-5 py-2 flex items-center gap-3 border-[#1E3E78] bg-[#1d254d] rounded-t-2xl">
-                <Header />
-              </div>
+              <Header />
 
               
 

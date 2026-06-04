@@ -5,7 +5,7 @@ import {
   viewCardById,
 } from "../../api/trello-api";
 import MainLayout from "../../layouts/MainLayout";
-import LoadingOverlay from "../../components/Common/LoadingOverlay";
+import SkeletonScreen from "../../components/Common/SkeletonScreen";
 import TrelloMarkdownRenderer from "../../utils/TrelloMarkdownRenderer";
 import Header from "../../components/Common/Header";
 import bgMain from "../../assets/scug.jpg";
@@ -125,14 +125,6 @@ const TermOfService = () => {
           <div ref={nodeRef}>
             {/* Main Card with Background Image Overlay */}
             <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
-              {loading && (
-                <div className="absolute inset-0 bg-[#1B1D25] bg-opacity-95 flex items-center justify-center z-50 rounded-2xl">
-                  <div className="text-center">
-                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#edf1ff] border-r-transparent"></div>
-                    <p className="mt-4 text-[#d1daff] text-lg">Loading...</p>
-                  </div>
-                </div>
-              )}
               {/* Background Image Overlay for Card */}
               <div
                 className="absolute inset-0 opacity-20 z-0"
@@ -144,11 +136,12 @@ const TermOfService = () => {
                 }}
               ></div>
 
-              <div className="px-5 py-2 flex items-center gap-3 border-[#1E3E78] bg-[#1d254d]">
                 <Header />
-              </div>
 
               {/* Content */}
+              {loading ? (
+                <SkeletonScreen embedded layout="tos" />
+              ) : (
               <div className={`p-8 md:p-12 relative z-10 transition-all duration-500 ${
                 isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}>
@@ -193,6 +186,7 @@ const TermOfService = () => {
                   </div>
                 )}
               </div>
+              )}
             </div>
           </div>
         </div>
