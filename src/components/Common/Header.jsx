@@ -37,6 +37,11 @@ const Header = () => {
       path: "/contact",
       icon: <PiLinkSimpleBold className="w-5 h-5" />,
     },
+    {
+      label: "About",
+      path : "/about",
+      icon: <FaRegQuestionCircle className="w-5 h-5" />,
+    }
   ];
 
   useEffect(() => {
@@ -73,8 +78,8 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full bg-[#1D254D]">
-      <div className="max-w-full mx-auto flex items-center justify-between px-4 py-4 text-md">
+    <header className="w-full bg-[#1D254D] relative z-40">
+      <div className="max-w-full mx-auto flex items-center justify-between px-4 h-16 text-md">
         <nav className="hidden md:flex items-center gap-3 font-medium text-md">
           {navItems.map((item) => (
             <Link

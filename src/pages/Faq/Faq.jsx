@@ -130,9 +130,7 @@ const Faq = () => {
                 }}
               ></div>
               
-              <div className="px-5 py-2 flex items-center gap-3 border-[#1E3E78] bg-[#1d254d] rounded-t-2xl">
-                <Header />
-              </div>
+              <Header />
 
               <div className={`p-8 md:p-12 relative z-10 transition-all duration-500 ${
                 isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
