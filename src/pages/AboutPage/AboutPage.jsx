@@ -90,11 +90,10 @@ const AboutPage = () => {
                 </div>
                 <div className="shadow-2xl overflow-hidden relative">
                   <p className="text-center mb-8 md:mb-12">
-                    The website use Trello to store images and information, so if you want to see more of my work or get updates, which explain the slow loading time~
+                    The website uses Trello to store images and information, so if you want to see more of my work or get updates, which explains the slow loading time~
                   </p>
                 </div>
                 <div className="bg-[#22232b] shadow-2xl overflow-hidden relative">
-                  
                 </div>
               </div>
             </div>

@@ -11,9 +11,9 @@ const SkeletonScreen = ({
   if (!show) return null;
 
   const wrapperClass = overlay
-    ? "absolute left-0 right-0 bottom-0 bg-[#1B1D25] bg-opacity-95 z-20 rounded-b-2xl overflow-hidden"
+    ? "absolute left-0 right-0 bottom-0 bg-[`#1B1D25`]/95 z-20 rounded-b-2xl overflow-hidden"
     : embedded
-      ? "relative z-10 bg-[#1B1D25] bg-opacity-95 rounded-b-2xl"
+      ? "relative z-10 bg-[`#1B1D25`]/95 rounded-b-2xl"
     : "min-h-screen flex items-center justify-center bg-transparent p-6";
 
   const innerClass = !overlay && !embedded
