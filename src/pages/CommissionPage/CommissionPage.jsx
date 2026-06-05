@@ -283,7 +283,7 @@ const CommissionPage = () => {
       {/* Lightbox Modal */}
       {selectedImage && (
         <div
-          className={`fixed inset-0 bg-black z-50 flex items-center justify-center p-4 ${cursorInteractions.commissionLightbox} transition-opacity duration-300 ${
+          className={`fixed inset-0 bg-black z-9999 flex items-center justify-center p-4 ${cursorInteractions.commissionLightbox} transition-opacity duration-300 ${
             isLightboxAnimating ? 'opacity-100' : 'opacity-0'
           }`}
           style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }}
