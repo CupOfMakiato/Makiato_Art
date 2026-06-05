@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   viewAllListsByBoardId,
   viewAllCardsByListId,
@@ -6,6 +6,7 @@ import {
 } from "../../api/trello-api";
 import MainLayout from "../../layouts/MainLayout";
 import SkeletonScreen from "../../components/Common/SkeletonScreen";
+import AnimatedPageCard from "../../components/Common/AnimatedPageCard";
 import TrelloMarkdownRenderer from "../../utils/TrelloMarkdownRenderer";
 import Header from "../../components/Common/Header";
 import bgMain from "../../assets/scug.jpg";
@@ -16,7 +17,6 @@ const TermOfService = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isContentAnimating, setIsContentAnimating] = useState(false);
-  const nodeRef = useRef(null);
 
   useEffect(() => {
         // Disable right-click
@@ -122,7 +122,7 @@ const TermOfService = () => {
       {/* Page Content */}
       <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
-          <div ref={nodeRef}>
+          <AnimatedPageCard>
             {/* Main Card with Background Image Overlay */}
             <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
               {/* Background Image Overlay for Card */}
@@ -188,7 +188,7 @@ const TermOfService = () => {
               </div>
               )}
             </div>
-          </div>
+          </AnimatedPageCard>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import Header from "../../components/Common/Header";
+import AnimatedPageCard from "../../components/Common/AnimatedPageCard";
 import { BsTwitterX } from "react-icons/bs";
 import { FaFacebookSquare } from "react-icons/fa";
 import { FaTelegram } from "react-icons/fa";
@@ -8,9 +9,16 @@ import { FaDiscord } from "react-icons/fa6";
 import { SiBluesky } from "react-icons/si";
 import bgMain from "../../assets/scug.jpg";
 import bgBehind from "../../assets/tanuki.jpg";
+import { cursorInteractions } from "../../utils/cursorInteraction";
+import linkHoverSound from "../../assets/cube-sort.mp3";
+import { useHowlSound } from "../../utils/useHowlSound";
 
 const ContactPage = () => {
   const [isContentAnimating, setIsContentAnimating] = useState(false);
+  const { play: playHoverSound, stop: stopHoverSound } = useHowlSound(
+        linkHoverSound,
+        { persist: true, volume: 0.35 }
+      );
 
   const socialLinks = [
     {
@@ -73,6 +81,12 @@ const ContactPage = () => {
       };
     }, []);
 
+    const playHoverCue = () => {
+    stopHoverSound();
+    playHoverSound();
+  };
+
+
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -89,9 +103,9 @@ const ContactPage = () => {
       <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
           
-          <div>
+          <AnimatedPageCard>
             {/* Main Card with Background Image Overlay */}
-            <div className="bg-[#22232b] shadow-2xl overflow-hidden relative rounded-t-2xl">
+            <div className="bg-[#22232b] shadow-2xl overflow-hidden relative rounded-2xl">
               {/* Background Image Overlay for Card */}
               <div
                 className="absolute inset-0 opacity-20 z-0"
@@ -131,11 +145,13 @@ const ContactPage = () => {
                 <div className="flex flex-col gap-3 w-full mx-auto">
                   {socialLinks.map((social) => (
                     <a
+                      onMouseEnter={playHoverCue}
                       key={social.name}
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF]"
+                      className={`${cursorInteractions.clickable} flex items-center justify-center gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF]
+                      hover:scale-103 text-left`}
                     >
                       <div className="text-2xl md:text-md text-[#EDF1FF] group-hover:text-[#A8D8FF] transition-all duration-300">
                         {social.icon}
@@ -148,7 +164,7 @@ const ContactPage = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </AnimatedPageCard>
         </div>
         
       </div>
