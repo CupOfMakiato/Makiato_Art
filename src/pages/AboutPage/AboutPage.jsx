@@ -82,16 +82,20 @@ const AboutPage = () => {
               <div className={`p-8 md:p-12 relative z-10 transition-all duration-500 ${
                 isContentAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}>
-                <div className="text-center mb-8 md:mb-12">
+                {/* <div className="text-center mb-8 md:mb-12">
                   <p>
                     This page is currently under construction. Please check back later for updates!
                   </p>
                   <span>
                   </span>
-                </div>
+                </div> */}
                 <div className="shadow-2xl overflow-hidden relative">
                   <p className="text-center mb-8 md:mb-12">
                     The website uses Trello to store images and information, which explains the slow loading time~
+                  </p>
+
+                  <p className="text-center mb-8 md:mb-12">
+                    This is only a static page with no server-side functionality. Media is still exposed and not proxied.
                   </p>
                 </div>
                 <div className="bg-[#22232b] shadow-2xl overflow-hidden relative">
