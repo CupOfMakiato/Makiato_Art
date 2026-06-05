@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import Header from "../../components/Common/Header";
 import Footer from "../../components/Common/Footer";
 import SkeletonScreen from "../../components/Common/SkeletonScreen";
+import AnimatedPageCard from "../../components/Common/AnimatedPageCard";
 import bgMain from "../../assets/scug.jpg";
 import bgBehind from "../../assets/tanuki.jpg";
 
@@ -20,7 +21,6 @@ const HomePage = () => {
   const [error, setError] = useState(null);
   // const [currentPath, setCurrentPath] = useState("");
   const [isContentAnimating, setIsContentAnimating] = useState(false);
-  const nodeRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // useEffect(() => {
@@ -124,7 +124,7 @@ const HomePage = () => {
       {/* Page Content */}
       <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
-          <div ref={nodeRef}>
+          <AnimatedPageCard>
             {/* Main Card with Background Image Overlay */}
             <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
               {/* Background Image Overlay for Card */}
@@ -227,7 +227,7 @@ const HomePage = () => {
               </div>
               )}
             </div>
-          </div>
+          </AnimatedPageCard>
         </div>
       </div>
 

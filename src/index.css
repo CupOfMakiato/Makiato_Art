@@ -37,6 +37,50 @@ body {
   min-height: 100vh;
 }
 
+.cursor-auto,
+html,
+body,
+#root {
+  cursor: url("./assets/cursor-auto.png") 0 0, auto;
+}
+
+.cursor-pointer-clicked,
+button:not(:disabled),
+a[href],
+[role="button"],
+[type="button"]:not(:disabled),
+[type="submit"]:not(:disabled) {
+  cursor: url("./assets/cursor-pointer-clicked.png") 8 2, pointer;
+}
+
+@keyframes cursor-pointer-click {
+  0%,
+  100% {
+    cursor: url("./assets/cursor-pointer-clicked.png") 8 2, pointer;
+  }
+  50% {
+    cursor: url("./assets/cursor-pointer-clicked.png") 8 5, pointer;
+  }
+}
+
+.cursor-pointer-clicked:hover:active,
+button:not(:disabled):hover:active,
+a[href]:hover:active,
+[role="button"]:hover:active,
+[type="button"]:not(:disabled):hover:active,
+[type="submit"]:not(:disabled):hover:active {
+  animation: cursor-pointer-click 120ms steps(1, end);
+  cursor: url("./assets/cursor-pointer-clicked.png") 8 5, pointer;
+}
+
+.cursor-zoom-in {
+  cursor: url("./assets/cursor-zoom-in.png") 12 12, zoom-in;
+}
+
+.cursor-zoom-out {
+  cursor: url("./assets/cursor-zoom-out.png") 12 12, zoom-out;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
