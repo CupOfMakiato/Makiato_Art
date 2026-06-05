@@ -221,7 +221,7 @@ const CommissionPage = () => {
                             onClick={() => openLightbox(image)}
                             onContextMenu={(e) => e.preventDefault()}
                           >
-                            <div className="relative bg-gray-100 overflow-hidden rounded-lg transition-transform duration-500 group-hover:scale-105">
+                            <div className="relative bg-transparent overflow-hidden rounded-lg transition-transform duration-500 group-hover:scale-105">
                               <img
                                 src={image.url}
                                 alt={image.name}
@@ -240,7 +240,7 @@ const CommissionPage = () => {
                                 }}
                               />
                               <div
-                                className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"
+                                className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"
                                 onContextMenu={(e) => e.preventDefault()}
                               />
                             </div>

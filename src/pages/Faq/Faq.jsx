@@ -6,12 +6,16 @@ import bgBehind from "../../assets/tanuki.jpg";
 import clickSound from "../../assets/collapsible_open.mp3";
 import { useHowlSound } from "../../utils/useHowlSound";
 import { cursorInteractions } from "../../utils/cursorInteraction";
+import questionHoverSound from "../../assets/cube-sort.mp3";
 
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [isContentAnimating, setIsContentAnimating] = useState(false);
   const { play: playClickSound } = useHowlSound(clickSound, { volume: 0.4 });
-
+  const { play: playHoverSound, stop: stopHoverSound } = useHowlSound(
+      questionHoverSound,
+      { persist: true, volume: 0.35 }
+    );
     useEffect(() => {
       const handleContextMenu = (e) => e.preventDefault();
 
@@ -54,6 +58,11 @@ const Faq = () => {
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
     playClickSound();
+  };
+
+  const playHoverCue = () => {
+    stopHoverSound();
+    playHoverSound();
   };
 
   const faqs = [
@@ -119,7 +128,8 @@ const Faq = () => {
                     <div key={index} className="w-full">
                       <button
                         onClick={() => toggleAccordion(index)}
-                        className={`${cursorInteractions.button} w-full flex items-center justify-between gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF]`}
+                        onMouseEnter={playHoverCue}
+                        className={`${cursorInteractions.button} w-full flex items-center justify-between gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF] hover:scale-103 text-left`}
                         aria-expanded={openIndex === index}
                       >
                         <span className="text-sm md:text-lg font-medium text-[#EDF1FF] group-hover:text-[#A8D8FF] transition-all duration-300 text-left">

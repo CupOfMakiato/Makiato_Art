@@ -10,9 +10,15 @@ import { SiBluesky } from "react-icons/si";
 import bgMain from "../../assets/scug.jpg";
 import bgBehind from "../../assets/tanuki.jpg";
 import { cursorInteractions } from "../../utils/cursorInteraction";
+import linkHoverSound from "../../assets/cube-sort.mp3";
+import { useHowlSound } from "../../utils/useHowlSound";
 
 const ContactPage = () => {
   const [isContentAnimating, setIsContentAnimating] = useState(false);
+  const { play: playHoverSound, stop: stopHoverSound } = useHowlSound(
+        linkHoverSound,
+        { persist: true, volume: 0.35 }
+      );
 
   const socialLinks = [
     {
@@ -75,6 +81,12 @@ const ContactPage = () => {
       };
     }, []);
 
+    const playHoverCue = () => {
+    stopHoverSound();
+    playHoverSound();
+  };
+
+
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -133,11 +145,13 @@ const ContactPage = () => {
                 <div className="flex flex-col gap-3 w-full mx-auto">
                   {socialLinks.map((social) => (
                     <a
+                      onMouseEnter={playHoverCue}
                       key={social.name}
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`${cursorInteractions.clickable} flex items-center justify-center gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF]`}
+                      className={`${cursorInteractions.clickable} flex items-center justify-center gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF]
+                      hover:scale-103 text-left`}
                     >
                       <div className="text-2xl md:text-md text-[#EDF1FF] group-hover:text-[#A8D8FF] transition-all duration-300">
                         {social.icon}
