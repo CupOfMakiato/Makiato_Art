@@ -1,33 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../components/Common/Header";
+import AnimatedPageCard from "../../components/Common/AnimatedPageCard";
 import bgMain from "../../assets/scug.jpg";
 import bgBehind from "../../assets/tanuki.jpg";
 import clickSound from "../../assets/collapsible_open.mp3";
-import { Howl } from "howler";
+import { useHowlSound } from "../../utils/useHowlSound";
+import { cursorInteractions } from "../../utils/cursorInteraction";
+import questionHoverSound from "../../assets/cube-sort.mp3";
 
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [isContentAnimating, setIsContentAnimating] = useState(false);
-  const clickSoundRef = useRef(null);
-  const [audioReady, setAudioReady] = useState(false);
-
-  // Initialize audio in useEffect
+  const { play: playClickSound } = useHowlSound(clickSound, { volume: 0.4 });
+  const { play: playHoverSound, stop: stopHoverSound } = useHowlSound(
+      questionHoverSound,
+      { persist: true, volume: 0.35 }
+    );
     useEffect(() => {
-      clickSoundRef.current = new Howl({
-        src: [clickSound],
-        volume: 0.4,
-        html5: true,
-        preload: true,
-      });
-  
-      const markAudioReady = () => {
-        setAudioReady(true);
-      };
-  
-      const events = ["click", "touchstart", "keydown"];
-      events.forEach((event) => {
-        document.addEventListener(event, markAudioReady, { once: true });
-      });
       const handleContextMenu = (e) => e.preventDefault();
 
     // Disable keyboard shortcuts
@@ -61,10 +50,6 @@ const Faq = () => {
         document.removeEventListener('contextmenu', handleContextMenu);
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('dragstart', handleDragStart);
-        events.forEach((event) => {
-          document.removeEventListener(event, markAudioReady);
-        });
-        if (clickSoundRef.current) clickSoundRef.current.unload();
       };
       
     }, []);
@@ -75,10 +60,9 @@ const Faq = () => {
     playClickSound();
   };
 
-  const playClickSound = () => {
-    if (clickSoundRef.current && audioReady) {
-      clickSoundRef.current.play();
-    }
+  const playHoverCue = () => {
+    stopHoverSound();
+    playHoverSound();
   };
 
   const faqs = [
@@ -118,8 +102,8 @@ const Faq = () => {
     >
       <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
-          <div>
-            <div className="bg-[#22232b] shadow-2xl overflow-hidden relative rounded-t-2xl">
+          <AnimatedPageCard>
+            <div className="bg-[#22232b] shadow-2xl overflow-hidden relative rounded-2xl">
               <div
                 className="absolute inset-0 opacity-20 z-0"
                 style={{
@@ -144,7 +128,8 @@ const Faq = () => {
                     <div key={index} className="w-full">
                       <button
                         onClick={() => toggleAccordion(index)}
-                        className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF]"
+                        onMouseEnter={playHoverCue}
+                        className={`${cursorInteractions.button} w-full flex items-center justify-between gap-3 px-4 py-3 bg-transparent hover:bg-[#3d3e47] transition-all duration-300 rounded-lg group border border-[#3d3e47] hover:border-[#A8D8FF] hover:scale-103 text-left`}
                         aria-expanded={openIndex === index}
                       >
                         <span className="text-sm md:text-lg font-medium text-[#EDF1FF] group-hover:text-[#A8D8FF] transition-all duration-300 text-left">
@@ -161,7 +146,7 @@ const Faq = () => {
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            strokeWidth={2}
+                            strokeWidth={5}
                             d="M19 9l-7 7-7-7"
                           />
                         </svg>
@@ -183,7 +168,7 @@ const Faq = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </AnimatedPageCard>
         </div>
       </div>
 

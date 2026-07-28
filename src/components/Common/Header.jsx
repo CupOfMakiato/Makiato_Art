@@ -1,19 +1,29 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { HiMenu } from "react-icons/hi";
 import { BiSolidDownArrow } from "react-icons/bi";
-import meowSound from "../../assets/omori-meow.mp3";
+import headerClickSound from "../../assets/animation-up-2.mp3";
+import headerHoverSound from "../../assets/cube-sort.mp3";
 import { TbFileDescription } from "react-icons/tb";
 import { FaPaintBrush } from "react-icons/fa";
 import { PiLinkSimpleBold } from "react-icons/pi";
 import { PiPawPrintFill } from "react-icons/pi";
 import { FaRegQuestionCircle } from "react-icons/fa";
-import { Howl } from "howler";
 import { Link, useLocation } from "react-router-dom";
+import { useHowlSound } from "../../utils/useHowlSound";
+import { cursorInteractions } from "../../utils/cursorInteraction";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const hoverSoundReadyRef = useRef(false);
   const { pathname } = useLocation();
-  const soundRef = useRef(null);
+  const { play: playHoverSound, stop: stopHoverSound } = useHowlSound(
+    headerHoverSound,
+    { persist: true, volume: 0.35 }
+  );
+  const { play: playClickSound, stop: stopClickSound } = useHowlSound(
+    headerClickSound,
+    { persist: true, volume: 0.45 }
+  );
 
   const navItems = [
     { label: "Home", path: "/", icon: <PiPawPrintFill className="w-5 h-5" /> },
@@ -45,21 +55,29 @@ const Header = () => {
   ];
 
   useEffect(() => {
-    soundRef.current = new Howl({
-      src: [meowSound],
-      volume: 1,
-      html5: true,
-      preload: true,
-    });
+    hoverSoundReadyRef.current = false;
 
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.unload();
-      }
-    };
-  }, []);
+    const hoverSoundTimer = window.setTimeout(() => {
+      hoverSoundReadyRef.current = true;
+    }, 250);
+
+    return () => window.clearTimeout(hoverSoundTimer);
+  }, [pathname]);
+
+  const playHoverCue = () => {
+    if (!hoverSoundReadyRef.current) return;
+
+    stopHoverSound();
+    playHoverSound();
+  };
+
+  const playClickCue = () => {
+    stopClickSound();
+    playClickSound();
+  };
 
   const toggleMenu = () => {
+    playClickCue();
     setIsMenuOpen((prev) => !prev);
   };
 
@@ -67,12 +85,22 @@ const Header = () => {
 
   const isActive = (path) => pathname === path;
 
+  const handleNavClick = (path, shouldCloseMenu = false) => {
+    if (!isActive(path)) {
+      playClickCue();
+    }
+
+    if (shouldCloseMenu) {
+      closeMenu();
+    }
+  };
+
   const getLinkClasses = (path, isMobile = false) => {
-    const base = `${isMobile ? "flex" : "inline-flex"} items-center gap-1 px-4 py-2 rounded-xl transition-all duration-300`;
+    const base = `${cursorInteractions.button} ${isMobile ? "flex" : "inline-flex"} items-center gap-1 px-4 py-2 rounded-xl transition-all duration-300`;
 
     const active = isActive(path)
-      ? "bg-[#2C56A0] text-white font-bold shadow-md text-md"
-      : "text-[#DBECF9] hover:bg-[#1E3E78] hover:text-white";
+      ? "bg-[#2C56A0] text-white font-bold shadow-md text-md transition-all duration-300 hover:scale-105"
+      : "text-[#DBECF9] hover:bg-[#1E3E78] hover:text-white transition-all duration-300 hover:scale-105";
 
     return `${base} ${active}`;
   };
@@ -85,6 +113,8 @@ const Header = () => {
             <Link
               key={item.path}
               to={item.path}
+              onMouseEnter={playHoverCue}
+              onClick={() => handleNavClick(item.path)}
               className={`${getLinkClasses(item.path)} flex items-center gap-2`}
             >
               {item.icon}
@@ -95,7 +125,8 @@ const Header = () => {
 
         <button
           onClick={toggleMenu}
-          className="md:hidden text-[#edf1ff] hover:text-[#2C56A0] focus:outline-none transition-all duration-300 hover:scale-110"
+          onMouseEnter={playHoverCue}
+          className={`${cursorInteractions.button} md:hidden text-[#edf1ff] hover:text-[#2C56A0] focus:outline-none transition-all duration-300 hover:scale-110`}
           aria-label="Toggle menu"
         >
           {isMenuOpen ? (
@@ -116,7 +147,8 @@ const Header = () => {
             <Link
               key={item.path}
               to={item.path}
-              onClick={closeMenu}
+              onMouseEnter={playHoverCue}
+              onClick={() => handleNavClick(item.path, true)}
               className={`${getLinkClasses(item.path, true)} flex items-center gap-3`}
             >
               {item.icon}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   viewAllListsByBoardId,
   viewAllCardsByListId,
@@ -6,12 +6,14 @@ import {
 } from "../../api/trello-api";
 import MainLayout from "../../layouts/MainLayout";
 import SkeletonScreen from "../../components/Common/SkeletonScreen";
+import AnimatedPageCard from "../../components/Common/AnimatedPageCard";
 import clickSound from "../../assets/collapsible_open.mp3";
 import Header from "../../components/Common/Header";
 import bgMain from "../../assets/scug.jpg";
 import bgBehind from "../../assets/tanuki.jpg";
 import TrelloMarkdownRenderer from "../../utils/TrelloMarkdownRenderer";
-import { Howl } from "howler";
+import { useHowlSound } from "../../utils/useHowlSound";
+import { cursorInteractions } from "../../utils/cursorInteraction";
 
 const CommissionPage = () => {
   const [commissionTiers, setCommissionTiers] = useState([]);
@@ -20,41 +22,8 @@ const CommissionPage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isLightboxAnimating, setIsLightboxAnimating] = useState(false);
   const [isContentAnimating, setIsContentAnimating] = useState(false);
-  const clickSoundRef = useRef(null);
-  const closeSoundRef = useRef(null);
-  const [audioReady, setAudioReady] = useState(false);
+  const { play: playClickSound } = useHowlSound(clickSound, { volume: 0.4 });
   
-
-  // Initialize audio in useEffect
-  useEffect(() => {
-    clickSoundRef.current = new Howl({
-      src: [clickSound],
-      volume: 0.4,
-      html5: true,
-      preload: true,
-    });
-
-    const clickAudio = clickSoundRef.current;
-    const closeAudio = closeSoundRef.current;
-
-    const markAudioReady = () => {
-      setAudioReady(true);
-    };
-
-    const events = ["click", "touchstart", "keydown"];
-    events.forEach((event) => {
-      document.addEventListener(event, markAudioReady, { once: true });
-    });
-
-    // Cleanup function
-    return () => {
-      events.forEach((event) => {
-        document.removeEventListener(event, markAudioReady);
-      });
-      if (clickAudio) clickAudio.unload();
-      if (closeAudio) closeAudio.unload();
-    };
-  }, []);
 
   useEffect(() => {
   const fetchPortfolioData = async () => {
@@ -152,18 +121,6 @@ const CommissionPage = () => {
     };
   }, []);
 
-  const playClickSound = () => {
-    if (clickSoundRef.current && audioReady) {
-      clickSoundRef.current.play();
-    }
-  };
-
-  // const playCloseSound = () => {
-  //   if (closeSoundRef.current && audioReady) {
-  //     closeSoundRef.current.play();
-  //   }
-  // };
-
   const openLightbox = (image) => {
     playClickSound();
     setSelectedImage(image);
@@ -199,17 +156,18 @@ const CommissionPage = () => {
       {/* Page Content */}
       <div className="grow py-12 px-4 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-3xl">
-          {/* Main Card with Background Image Overlay */}
-          <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
-            <div
-              className="absolute inset-0 opacity-20 z-0"
-              style={{
-                backgroundImage: `url(${bgMain})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                pointerEvents: "none",
-              }}
-            ></div>
+          <AnimatedPageCard>
+            {/* Main Card with Background Image Overlay */}
+            <div className="bg-[#22232b] rounded-2xl shadow-2xl overflow-hidden relative">
+              <div
+                className="absolute inset-0 opacity-20 z-0"
+                style={{
+                  backgroundImage: `url(${bgMain})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  pointerEvents: "none",
+                }}
+              ></div>
 
             <Header />
 
@@ -259,11 +217,11 @@ const CommissionPage = () => {
                         {tier.images.map((image) => (
                           <div
                             key={image.id}
-                            className="break-inside-avoid cursor-zoom-in group mb-6"
+                            className={`break-inside-avoid ${cursorInteractions.commissionArt} group mb-6`}
                             onClick={() => openLightbox(image)}
                             onContextMenu={(e) => e.preventDefault()}
                           >
-                            <div className="relative bg-gray-100 overflow-hidden rounded-lg transition-transform duration-500 group-hover:scale-105">
+                            <div className="relative bg-transparent overflow-hidden rounded-lg transition-transform duration-500 group-hover:scale-105">
                               <img
                                 src={image.url}
                                 alt={image.name}
@@ -282,7 +240,7 @@ const CommissionPage = () => {
                                 }}
                               />
                               <div
-                                className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"
+                                className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"
                                 onContextMenu={(e) => e.preventDefault()}
                               />
                             </div>
@@ -317,14 +275,15 @@ const CommissionPage = () => {
             )}
 
 
-          </div>
+            </div>
+          </AnimatedPageCard>
         </div>
       </div>
 
       {/* Lightbox Modal */}
       {selectedImage && (
         <div
-          className={`fixed inset-0 bg-black z-50 flex items-center justify-center p-4 cursor-zoom-out transition-opacity duration-300 ${
+          className={`fixed inset-0 bg-black z-9999 flex items-center justify-center p-4 ${cursorInteractions.commissionLightbox} transition-opacity duration-300 ${
             isLightboxAnimating ? 'opacity-100' : 'opacity-0'
           }`}
           style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }}
@@ -332,7 +291,7 @@ const CommissionPage = () => {
           onContextMenu={(e) => e.preventDefault()}
         >
           <div
-            className={`max-w-6xl max-h-full relative cursor-zoom-out transition-all duration-300 ${
+            className={`max-w-6xl max-h-full relative ${cursorInteractions.commissionLightbox} transition-all duration-300 ${
               isLightboxAnimating ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -341,7 +300,7 @@ const CommissionPage = () => {
             <img
               src={selectedImage.url}
               alt={selectedImage.name}
-              className="max-w-full max-h-[80vh] cursor-zoom-out object-contain mx-auto select-none"
+              className={`max-w-full max-h-[80vh] ${cursorInteractions.commissionLightbox} object-contain mx-auto select-none`}
               draggable="false"
               onDragStart={handleDragStart}
               onClick={closeLightbox}
@@ -356,7 +315,7 @@ const CommissionPage = () => {
               }}
             />
             <div
-              className="absolute inset-0 pointer-events-none cursor-zoom-out"
+              className={`absolute inset-0 pointer-events-none ${cursorInteractions.commissionLightbox}`}
               onContextMenu={(e) => e.preventDefault()}
             />
           </div>

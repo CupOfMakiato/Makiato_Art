@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@shopify/draggable": "^1.2.1",
     "@tailwindcss/vite": "^4.1.17",
+    "animejs": "^4.4.1",
     "axios": "^1.13.2",
     "howler": "^2.2.4",
     "markdown-to-jsx": "^9.1.1",
